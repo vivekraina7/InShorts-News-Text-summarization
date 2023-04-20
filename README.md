@@ -1,6 +1,6 @@
 # InShorts-News-Text-summarization📰
 
-## Title: Deep Learning Project: News Text Summarization using LSTM Neural Networks and Web Deployment
+## Deep Learning Project: News Text Summarization using LSTM Neural Networks and Web Deployment
 
 1. Developed a deep learning project to summarize news articles using LSTM (Long Short-Term Memory) neural networks.
 2. Used Python programming language and libraries like TensorFlow, Keras, and Streamlit to build the project.
