@@ -1,10 +1,13 @@
 import streamlit as st
-from transformers import PegasusTokenizer, TFPegasusForConditionalGeneration
+from transformers import AutoTokenizer,AutoModelForSeq2SeqLM #PegasusTokenizer, TFPegasusForConditionalGeneration
 import tensorflow as tf
 
 # initialize the Pegasus tokenizer and model
-tokenizer = PegasusTokenizer.from_pretrained('google/pegasus-cnn_dailymail')
-model = TFPegasusForConditionalGeneration.from_pretrained('google/pegasus-cnn_dailymail')
+tokenizer = AutoTokenizer.from_pretrained("google/pegasus-cnn_dailymail")
+#tokenizer = PegasusTokenizer.from_pretrained('google/pegasus-cnn_dailymail')
+model = AutoModelForSeq2SeqLM.from_pretrained("google/pegasus-cnn_dailymail")
+#model = TFPegasusForConditionalGeneration.from_pretrained('google/pegasus-cnn_dailymail')
+
 
 # define a function to preprocess the user input
 def preprocess(text):
