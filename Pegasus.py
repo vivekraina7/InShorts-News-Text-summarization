@@ -1,17 +1,40 @@
 import streamlit as st
-from transformers import TFBigBirdPegasusForConditionalGeneration, BigBirdPegasusTokenizer
+from transformers import PegasusTokenizer, TFPegasusForConditionalGeneration
+import tensorflow as tf
 
-st.set_page_config(page_title="Text Summarization App")
+# initialize the Pegasus tokenizer and model
+tokenizer = PegasusTokenizer.from_pretrained('google/pegasus-cnn_dailymail')
+model = TFPegasusForConditionalGeneration.from_pretrained('google/pegasus-cnn_dailymail')
 
-st.title("Text Summarization App")
+# define a function to preprocess the user input
+def preprocess(text):
+    inputs = tokenizer(text, truncation=True, padding='longest', max_length=512, return_tensors='tf')
+    return inputs
 
-tokenizer = BigBirdPegasusTokenizer.from_pretrained("google/bigbird-pegasus-large-pubmed")
-model = TFBigBirdPegasusForConditionalGeneration.from_pretrained("model")
-
-text = st.text_area("Enter the text to be summarized:", height=200)
-
-if st.button("Summarize"):
-    inputs = tokenizer.encode_plus(text, return_tensors='tf', padding='max_length', max_length=1024, truncation=True)
-    summary_ids = model.generate(inputs['input_ids'], attention_mask=inputs['attention_mask'], max_length=256, min_length=56, num_beams=4, no_repeat_ngram_size=2)
+# define a function to generate the summary
+def generate_summary(text):
+    inputs = preprocess(text)
+    summary_ids = model.generate(inputs['input_ids'], num_beams=4, max_length=64, early_stopping=True)
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-    st.write(summary)
+    return summary
+
+# define the Streamlit app
+def main():
+    # set the app title and description
+    st.title('Text Summarization')
+    st.markdown('Enter some text and click the button to generate a summary.')
+
+    # create a text input box for the user to enter their text
+    text = st.text_input('Enter some text')
+
+    # create a button to generate the summary
+    if st.button('Generate Summary'):
+        # generate the summary
+        summary = generate_summary(text)
+
+        # display the summary
+        st.subheader('Summary')
+        st.write(summary)
+
+if __name__ == '__main__':
+    main()
